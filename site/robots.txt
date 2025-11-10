@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://dfg.homes/sitemap.xml
+Sitemap: https://dfg.by/sitemap.xml
