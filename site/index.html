@@ -105,6 +105,10 @@
 
     footer{background:#f6f6f6;padding:28px 0;margin-top:40px;color:var(--muted);font-size:14px;text-align:center;}
 
+    html {
+      scroll-padding-top: var(--header-offset, 10px);
+    }
+
     /* MODAL */
     .modal{
       position:fixed;
@@ -495,6 +499,16 @@
       btn.disabled = false;
     }
   });
+</script>
+<script>
+  function updateHeaderOffset() {
+    const headerHeight = document.querySelector('header').offsetHeight;
+    document.documentElement.style.setProperty('--header-offset', (headerHeight - 40)+ 'px');
+  }
+
+  updateHeaderOffset();
+
+  window.addEventListener('resize', updateHeaderOffset);
 </script>
 
 </body>
