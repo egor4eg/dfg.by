@@ -61,7 +61,6 @@
     .brand .subtitle{font-size:13px;color:var(--muted);}
     nav{display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:flex-end;}
     nav a{padding:8px 12px;border-radius:8px;font-weight:600;}
-    nav a.primary{background:var(--accent);color:#fff;}
 
     /* HERO */
     .hero{height:88vh;min-height:520px;display:flex;align-items:center;position:relative;color:#fff;margin-top:84px;}
@@ -162,22 +161,118 @@
       cursor:pointer;
     }
 
-    /* MOBILE */
-    @media(max-width:700px){
-      .header-inner{flex-direction:column;align-items:flex-start;}
-      nav{justify-content:flex-start;}
-      .hero h1{font-size:28px;}
-      .hero p{font-size:16px;}
+    .submit-btn {
+      width: 100%;
+      padding: 14px;
+      font-size: 17px;
+      border-radius: 10px;
+      font-weight: 700;
     }
 
+    /* MOBILE FULLSCREEN MODAL */
     @media(max-width:700px){
-      #cancel-btn { display:block; }
-      .modal-content {
-        height:100vh;
-        max-width:100%;
-        border-radius:0;
-        padding-top:40px;
+
+      body.modal-open {
+        overflow: hidden;
+        height: 100dvh;
       }
+
+      .modal{
+        padding:0;
+      }
+
+      .modal-content{
+        width:100%;
+        height:100dvh;
+        max-width:none;
+        border-radius:0;
+        padding:70px 20px 100px; /* сверху под шапку, снизу под кнопку */
+        box-shadow:none;
+        overflow:hidden;
+        position:relative;
+        animation:modalSlideUp .22s ease-out;
+      }
+
+      @keyframes modalSlideUp{
+        from{transform:translateY(40px);opacity:0}
+        to{transform:translateY(0);opacity:1}
+      }
+
+      /* FIXED TOP BAR */
+      .modal-header{
+        position:fixed;
+        top:0;
+        left:0;
+        right:0;
+        height:60px;
+        background:#fff;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-size:20px;
+        font-weight:700;
+        z-index:1001;
+        border-bottom:1px solid #eee;
+      }
+
+      .modal-close{
+        position:fixed;
+        top:14px;
+        right:16px;
+        font-size:34px;
+        z-index:1002;
+      }
+
+      /* FIXED BOTTOM ACTION BAR */
+      .modal-submit-bar{
+        position:fixed;
+        bottom:0;
+        left:0;
+        right:0;
+        background:#fff;
+        padding:14px 20px;
+        border-top:1px solid #eee;
+        z-index:1001;
+      }
+
+      .modal-submit-bar button{
+        width:100%;
+        padding:14px;
+        background:#111;
+        color:#fff;
+        border-radius:10px;
+        font-size:17px;
+        font-weight:700;
+      }
+
+      .modal-form {
+        display: flex;
+        flex-direction: column;
+        height: calc(100dvh - 60px - 70px);
+        overflow: hidden;
+      }
+
+/* MOBILE FORM LAYOUT WITH EXPANDING TEXTAREA */
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 60px - 70px); 
+  /* 60px — высота шапки, 70px — нижняя панель */
+  overflow: hidden;
+}
+
+/* Поля имени и телефона — фиксированные */
+.modal-form input {
+  flex: 0 0 auto;
+}
+
+/* Комментарий растягивается */
+.modal-form textarea {
+  flex: 1 1 auto;
+  min-height: 120px;
+  resize: none;
+  overflow-y: auto;
+}
     }
   </style>
 </head>
@@ -195,7 +290,7 @@
     <nav>
       <a href="#services">Услуги</a>
       <a href="#portfolio">Работы</a>
-      <a href="#contact" class="primary">Контакты</a>
+      <a href="#contact">Контакты</a>
     </nav>
   </div>
 </header>
@@ -274,29 +369,23 @@
 <!-- MODAL -->
 <div id="callback-modal" class="modal">
   <div class="modal-content">
-    <button class="modal-close" id="close-form" aria-label="Закрыть">×</button>
 
-    <h3 id="modal-title">Заказать звонок</h3>
+    <div class="modal-header">Заказать звонок</div>
+    <button class="modal-close" id="close-form">×</button>
 
-    <!-- SUCCESS / ERROR MESSAGE -->
     <div id="modal-message" style="display:none; text-align:center; font-size:17px; margin-bottom:12px;"></div>
 
-    <form id="callback-form">
-      <input type="hidden" name="access_key" value="6b357ccf-6173-467a-af4d-17d873c3c2f2">
-      <input type="text" name="name" placeholder="Ваше имя">
-      <input type="tel" id="phone-input" name="phone" placeholder="Ваш телефон" required>
-      <div id="phone-error" style="display:none; color:#b00020; font-size:14px; margin:-6px 0 10px 0;"></div>
-      <textarea name="message" placeholder="Комментарий"></textarea>
-
-      <button type="submit" class="btn submit-btn" style="width:100%;margin-top:4px;">Отправить</button>
-
-      <button id="modal-ok-btn" class="btn" style="display:none; width:100%; margin-top:12px;">
-        Хорошо
-      </button>
-      <div id="cancel-btn" style="display:none; margin-top:12px; text-align:center; color:#666; font-size:15px; cursor:pointer;">
-        Отмена
-      </div>
+    <form id="callback-form" class="modal-form">
+        <input type="hidden" name="access_key" value="6b357ccf-6173-467a-af4d-17d873c3c2f2">
+        <input type="text" name="name" id="name-field" placeholder="Ваше имя" required>
+        <input type="tel" name="phone" id="phone-input" placeholder="Ваш телефон" required>
+        <textarea name="message" placeholder="Комментарий"></textarea>
     </form>
+
+    <div class="modal-submit-bar">
+        <button type="submit" form="callback-form" class="btn submit-btn">Отправить</button>
+    </div>
+
   </div>
 </div>
 
@@ -321,14 +410,28 @@
   // Открытие
   openBtn.addEventListener('click', () => {
     modal.classList.add('show');
+    document.body.classList.add("modal-open");
+
     modalMessage.style.display = "none";
     form.style.display = "block";
-    modalTitle.textContent = "Заказать звонок";
+
+    setTimeout(() => {
+      document.getElementById("name-field").focus();
+    }, 150);
   });
 
   // Закрытие
-  closeBtn.addEventListener('click', () => modal.classList.remove('show'));
-  modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('show'); });
+  closeBtn.addEventListener('click', () => {
+    modal.classList.remove('show');
+    document.body.classList.remove("modal-open");
+  });
+
+  modal.addEventListener('click', (e) => { 
+    if (e.target === modal) {
+      modal.classList.remove('show');
+      document.body.classList.remove("modal-open");
+    }
+  });
 
   // Мягкая валидация телефона
   function isValidPhone(phone) {
